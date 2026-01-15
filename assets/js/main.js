@@ -1,39 +1,44 @@
-(() => {
-  // Mobile nav toggle
-  const toggle = document.querySelector(".nav-toggle");
-  const links = document.getElementById("nav-links");
+// document.addEventListener("DOMContentLoaded", () => {
+//   const links = document.querySelectorAll("[data-page]");
+//   const pages = document.querySelectorAll(".page");
 
-  if (toggle && links) {
-    toggle.addEventListener("click", () => {
-      const isOpen = links.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", String(isOpen));
-    });
+//   function showPage(pageId) {
+//     pages.forEach(page => {
+//       page.classList.toggle("active", page.id === pageId);
+//     });
+//   }
 
-    // Close menu when clicking a link (mobile)
-    links.querySelectorAll("a").forEach(a => {
-      a.addEventListener("click", () => {
-        links.classList.remove("open");
-        toggle.setAttribute("aria-expanded", "false");
-      });
+//   links.forEach(link => {
+//     link.addEventListener("click", (e) => {
+//       e.preventDefault();
+//       showPage(link.dataset.page);
+//     });
+//   });
+// });
+
+
+
+document.addEventListener("click", function (e) {
+  const link = e.target.closest("[data-page]");
+  if (!link) return;
+
+  e.preventDefault();
+
+  const pageId = link.dataset.page;
+
+  // 1. PRIKAŽI STRANICU
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.toggle("active", page.id === pageId);
+  });
+
+  // 2. AKTIVNI LINK SAMO U HEADER NAVIGACIJI
+  const nav = document.getElementById("nav-links");
+  if (nav) {
+    nav.querySelectorAll(".nav-link").forEach(navLink => {
+      navLink.classList.toggle(
+        "active",
+        navLink.dataset.page === pageId
+      );
     });
   }
-
-  // Footer year
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // Simple filter on resources page
-  const filter = document.getElementById("filter");
-  const grid = document.getElementById("resourceGrid");
-
-  if (filter && grid) {
-    const items = Array.from(grid.querySelectorAll(".resource"));
-    filter.addEventListener("input", () => {
-      const q = filter.value.trim().toLowerCase();
-      items.forEach(card => {
-        const hay = (card.innerText + " " + (card.dataset.tags || "")).toLowerCase();
-        card.style.display = hay.includes(q) ? "" : "none";
-      });
-    });
-  }
-})();
+});
